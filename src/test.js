@@ -372,12 +372,15 @@ Test.prototype = {
 		}
 
 		// If the filter matches, we need to honour include
-		if ( fullName.indexOf( filter ) !== -1 ) {
-			return include;
+		var regexFilter;
+		var isRegEx = filter.charAt(0) === "/" && filter.charAt(filter.length - 1) === "/";
+		if (isRegEx) {
+			regexFilter = new RegExp(filter.substr(1, filter.length - 2), "i");
+			return regexFilter.test(fullName) ? include : !include;
+		} else {
+			return fullName.indexOf( filter.toLowerCase() ) !== -1 ? include : !include;
 		}
 
-		// Otherwise, do the opposite
-		return !include;
 	}
 
 };
