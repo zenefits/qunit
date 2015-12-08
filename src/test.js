@@ -347,7 +347,9 @@ Test.prototype = {
 		var include,
 			filter = config.filter,
 			module = QUnit.urlParams.module && QUnit.urlParams.module.toLowerCase(),
-			fullName = ( this.module.name + ": " + this.testName ).toLowerCase();
+			fullName = ( this.module.name + ": " + this.testName ).toLowerCase(),
+			regexFilter,
+			isRegEx;
 
 		// Internally-generated tests are always valid
 		if ( this.callback && this.callback.validTest ) {
@@ -372,8 +374,7 @@ Test.prototype = {
 		}
 
 		// If the filter matches, we need to honour include
-		var regexFilter;
-		var isRegEx = filter.charAt(0) === "/" && filter.charAt(filter.length - 1) === "/";
+		isRegEx = filter.charAt(0) === "/" && filter.charAt(filter.length - 1) === "/";
 		if (isRegEx) {
 			regexFilter = new RegExp(filter.substr(1, filter.length - 2), "i");
 			return regexFilter.test(fullName) ? include : !include;
