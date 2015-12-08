@@ -6,7 +6,7 @@
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2015-01-20T19:39Z
+ * Date: 2015-12-08T00:57Z
  */
 
 (function( window ) {
@@ -1125,7 +1125,9 @@ Test.prototype = {
 		var include,
 			filter = config.filter,
 			module = QUnit.urlParams.module && QUnit.urlParams.module.toLowerCase(),
-			fullName = ( this.module.name + ": " + this.testName ).toLowerCase();
+			fullName = ( this.module.name + ": " + this.testName ).toLowerCase(),
+			regexFilter,
+			isRegEx;
 
 		// Internally-generated tests are always valid
 		if ( this.callback && this.callback.validTest ) {
@@ -1150,12 +1152,14 @@ Test.prototype = {
 		}
 
 		// If the filter matches, we need to honour include
-		if ( fullName.indexOf( filter ) !== -1 ) {
-			return include;
+		isRegEx = filter.charAt(0) === "/" && filter.charAt(filter.length - 1) === "/";
+		if (isRegEx) {
+			regexFilter = new RegExp(filter.substr(1, filter.length - 2), "i");
+			return regexFilter.test(fullName) ? include : !include;
+		} else {
+			return fullName.indexOf( filter.toLowerCase() ) !== -1 ? include : !include;
 		}
 
-		// Otherwise, do the opposite
-		return !include;
 	}
 
 };
